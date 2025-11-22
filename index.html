@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>ADHI TURBO CRASH SIGNAL 🚀</title>
-<!-- PWA INTEGRATION 1: Link Manifest File in the head -->
-<!-- NOTE: Manifest is kept for "Add to Home Screen" functionality, but Service Worker is removed. -->
+<!-- PWA Manifest Link -->
 <link rel="manifest" href="manifest.json"> 
 <meta name="theme-color" content="#39ff14">
 
@@ -22,6 +21,7 @@ body {
     background: linear-gradient(135deg, #0f172a, #1e293b); 
     color:#fff; 
     transition: background-color 0.3s; 
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 h1 { 
     color:#39ff14; 
@@ -30,7 +30,7 @@ h1 {
     padding-top: 30px; 
     text-shadow: 0 0 15px rgba(57, 255, 20, 0.8), 0 0 5px rgba(57, 255, 20, 0.4);
     letter-spacing: 1.5px;
-    font-size: 28px;
+    font-size: 26px; /* Slightly smaller for mobile safety */
     font-weight: 900;
 }
 h2 { color: #00bcd4; margin-bottom: 20px; }
@@ -76,20 +76,26 @@ input {
 
 /* --- LAYOUT --- */
 #appContent, #loginContainer, #registerContainer { 
-    display:flex;
+    display:flex; 
     flex-direction:column;
     align-items:center;
     width:90%;
     max-width:480px; 
     position:relative;
-    padding: 40px; 
+    padding: 30px; /* Reduced padding slightly */
     background: #1e293b; 
     border-radius: 25px; 
     box-shadow: 0 0 30px rgba(57, 255, 20, 0.1), 0 15px 40px rgba(0,0,0,0.9); 
     border: 3px solid #2d3b50; 
-    gap: 30px; 
+    gap: 25px; 
     z-index: 10; 
+    margin-bottom: 20px;
 }
+/* IMPORTANT: Ensure App Content is hidden by default */
+#appContent { display: none; } 
+#loginContainer { display: none; }
+#registerContainer { display: none; }
+
 .input-group { display:flex; flex-direction:column; gap: 5px; width:100%; margin-bottom: 15px; }
 
 /* --- BUTTONS --- */
@@ -123,7 +129,7 @@ input {
     margin-bottom: 5px;
 }
 #realTimeClock {
-    font-size: 48px;
+    font-size: 40px; /* Adjusted for better fit */
     font-weight: 900;
     color: #fff;
     text-shadow: 0 0 10px #39ff14, 0 0 20px #39ff14;
@@ -197,7 +203,14 @@ input {
 }
 
 /* --- LOADING SCREEN --- */
-#loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0f172a; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease-out; }
+#loading-screen { 
+    position: fixed; 
+    top: 0; left: 0; width: 100%; height: 100%; 
+    background-color: #0f172a; 
+    display: flex; flex-direction: column; justify-content: center; align-items: center; 
+    z-index: 99999; /* Very high z-index */
+    transition: opacity 0.5s ease-out; 
+}
 #crashRocket { font-size: 50px; position: absolute; bottom: 30%; left: 10%; animation: flight-sequence 2s ease-in-out forwards; }
 @keyframes flight-sequence { 0% { transform: translate(0, 0) rotate(-45deg); opacity: 0.5; } 50% { transform: translate(calc(60vw - 80px), -150px) rotate(-35deg); opacity: 1; } 100% { transform: translate(calc(100vw - 80px), -250px) rotate(0deg); opacity: 0.1; } }
 .loading-bar { width: 80%; max-width: 300px; height: 8px; background-color: #3a4257; border-radius: 4px; overflow: hidden; margin-top: 150px; }
@@ -242,7 +255,7 @@ input {
 <h1>ADHI TURBO CRASH SIGNAL 🚀</h1>
 
 <!-- LOGIN -->
-<div id="loginContainer" style="display: none;">
+<div id="loginContainer">
     <h2 style="color:#00bcd4;">පද්ධතියට පිවිසෙන්න</h2>
     <div class="input-group"><label>Username</label><input id="loginUsernameInput" type="text" placeholder="Username"></div>
     <div class="input-group"><label>Password</label>
@@ -256,7 +269,7 @@ input {
 </div>
 
 <!-- REGISTER -->
-<div id="registerContainer" style="display: none;">
+<div id="registerContainer">
     <h2 style="color:#ffaa00;">නව ගිණුමක් සාදන්න</h2>
     <div class="input-group"><label>Username</label><input id="regUsernameInput" type="text" placeholder="Username (Min 4 chars)"></div>
     <div class="input-group"><label>Password</label>
@@ -270,26 +283,21 @@ input {
 </div>
 
 <!-- APP CONTENT -->
-<div id="appContent" style="display: none;">
+<div id="appContent">
   <div class="box" style="width: 100%;"> 
     
-    <!-- WIN RATE DISPLAY (Moved above generate button) -->
     <div id="winRateContainer">
         <div id="winRateDisplay">Win Rate: --%</div>
     </div>
 
-    <!-- REAL TIME CLOCK (HIGHLIGHTED) -->
     <div id="realTimeClockContainer">
         <div id="realTimeClock">--:--:--</div>
     </div>
 
-    <!-- BUTTON -->
     <button id="generateBtn" onclick="displayCurrentSignal()">GENERATE SIGNAL</button>
     
-    <!-- OUTPUT AREA -->
     <div id="signalOutput">
         <div id="preBetInstruction" style="display: none;"></div>
-        
         <div id="timeDisplayContainer">
             <div id="signalHeader">Signal සඳහා සූදානම්...</div>
             <div id="signalTimeDisplay">--:--</div>
@@ -305,7 +313,6 @@ input {
         <div id="statusMessage" style="color:#00bcd4; font-size:14px; margin-top:10px;">Ready...</div>
     </div>
     
-    <!-- PROMO -->
     <div id="promoBox">
         <p style="font-size:14px; font-weight:600; margin-bottom:5px;">Bonus Code:</p>
         <div id="promoCodeDisplay">1x_3660569</div>
@@ -341,6 +348,14 @@ input {
 </div></div>
 
 <script>
+// --- GLOBAL ERROR HANDLER ---
+window.onerror = function(message, source, lineno, colno, error) {
+    console.error("Global Error caught:", message);
+    // Force hide loading screen on error
+    const loadingScreen = document.getElementById('loading-screen');
+    if(loadingScreen) loadingScreen.style.display = 'none';
+};
+
 const PROMO_CODE = "1x_3660569";
 const PARTNER_URL = "https://refpa58144.com/L?tag=d_4844655m_1236c_adhi_crash_app&site=4844655&ad=1236"; 
 const LOGIN_KEY = "isLoggedIn";
@@ -350,18 +365,18 @@ const DEVICE_KEY = "Adhi_Device_UUID";
 let historyArr = [];
 let signalSchedule = {};
 let lastNotifiedTime = ""; 
-
-// New state for minute-based rate
-let currentWinRate = -1; // -1 indicates not yet calculated
+let currentWinRate = -1;
 let lastMinute = -1; 
-
 
 // --- UTILS ---
 function getDeviceID() {
-    let id = localStorage.getItem(DEVICE_KEY);
-    if(!id) { id = Math.random().toString(36).substring(2); localStorage.setItem(DEVICE_KEY, id); }
-    return id;
+    try {
+        let id = localStorage.getItem(DEVICE_KEY);
+        if(!id) { id = Math.random().toString(36).substring(2); localStorage.setItem(DEVICE_KEY, id); }
+        return id;
+    } catch(e) { return "DEV-ID-ERROR"; }
 }
+
 function copyPromoCode() {
     const textArea = document.createElement("textarea");
     textArea.value = PROMO_CODE;
@@ -460,9 +475,7 @@ function updateWinRate(now) {
     const h = now.getHours();
     const m = now.getMinutes();
 
-    // 1. Check if the minute has changed. If not, exit early and keep the existing rate.
     if (m === lastMinute && currentWinRate !== -1) {
-        // Only run notification check on subsequent seconds within the same minute
         if (currentWinRate >= 85) {
             const currentTimeStr = `${h}:${m}`;
             if (lastNotifiedTime !== currentTimeStr) {
@@ -473,42 +486,33 @@ function updateWinRate(now) {
         return;
     }
 
-    // 2. The minute has changed (or it's the first run). Calculate and set the new rate.
     lastMinute = m;
-
     let min=0, max=0, color="";
     let isSuperHigh = false;
 
-    // 2.1. Determine the rate range based on time (Priority Order)
-    
     // 1. Super High: 00:17-00:45 OR 16:15-16:45 (85%-95%)
     if ((h===0 && m>=17 && m<=45) || (h===16 && m>=15 && m<=45)) {
-        min=85; max=95; color="#ffdd66"; // Gold/Yellow
+        min=85; max=95; color="#ffdd66"; 
         isSuperHigh = true;
     }
-    // 2. Medium-High: xx:07 to xx:52 (75%-80%) - NEW RULE
+    // 2. Medium-High: xx:07 to xx:52 (75%-80%)
     else if (m >= 7 && m <= 52) {
-        min=75; max=80; color="#00bcd4"; // Cyan/Blue
+        min=75; max=80; color="#00bcd4"; 
     }
     // 3. Low: The remaining time (53 to 06) (12%-47%)
     else {
-        min=12; max=47; color="#ff6b6b"; // Red
+        min=12; max=47; color="#ff6b6b"; 
     }
 
-    // 2.2. Generate the new rate for the entire minute
     currentWinRate = Math.floor(Math.random() * (max - min + 1)) + min;
-    
-    // 2.3. Update the display
     const el = document.getElementById('winRateDisplay');
     el.innerText = `Win Rate: ${currentWinRate}%`;
     el.style.color = color;
     el.style.borderColor = color;
     el.style.boxShadow = `0 0 10px ${color}`;
 
-    // 2.4. Trigger Notification if Super High (check against the newly generated rate)
     if (isSuperHigh && currentWinRate >= 85) {
         const currentTimeStr = `${h}:${m}`;
-        // Ensure notification is only sent once per minute
         if (lastNotifiedTime !== currentTimeStr) {
             sendNotification("🚀 HIGH WIN RATE ALERT! 🚀", "Win Rate is now 85%-95%! හොඳම වෙලාව මෙයයි.");
             lastNotifiedTime = currentTimeStr;
@@ -522,12 +526,10 @@ function requestNotificationPermission() {
     } else {
         Notification.requestPermission().then(permission => {
             if (permission === "granted") {
-                // Not granted, so we successfully got permission
                 customAlert("Notifications සක්‍රියයි! ✅");
                 document.getElementById('notificationBtn').style.display = 'none';
             } else {
-                // Denied (either by user action or previous browser setting)
-                customAlert("Notifications අවසරය ප්‍රතික්ෂේප විය. 🚫\nකරුණාකර ඔබගේ බ්‍රව්සර් සැකසුම් (Site Settings) මඟින් මෙම වෙබ් අඩවියට Notification අවසරය ලබා දෙන්න.");
+                customAlert("Notifications අවසරය ප්‍රතික්ෂේප විය. 🚫");
             }
         });
     }
@@ -542,13 +544,16 @@ function sendNotification(title, body) {
 // --- AUTH & HACKER BG ---
 let canvas, ctx, drops, matrixInterval;
 function initHacker() {
-    canvas = document.getElementById('hackerCodeCanvas');
-    ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-    let cols = Math.floor(canvas.width/20);
-    drops = Array(cols).fill(1);
+    try {
+        canvas = document.getElementById('hackerCodeCanvas');
+        ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let cols = Math.floor(canvas.width/20);
+        drops = Array(cols).fill(1);
+    } catch(e) { console.log("Canvas init failed"); }
 }
 function drawHacker() {
+    if(!ctx) return;
     ctx.fillStyle = 'rgba(15, 23, 42, 0.05)'; ctx.fillRect(0,0,canvas.width,canvas.height);
     ctx.fillStyle = '#0F0'; ctx.font = '15px monospace';
     for(let i=0; i<drops.length; i++) {
@@ -559,40 +564,49 @@ function drawHacker() {
     }
 }
 function toggleHacker(show) {
-    let c = document.getElementById('hackerCodeCanvas');
-    if(show) { c.style.display='block'; if(!matrixInterval) matrixInterval=setInterval(drawHacker,50); }
-    else { c.style.display='none'; clearInterval(matrixInterval); matrixInterval=null; }
+    try {
+        let c = document.getElementById('hackerCodeCanvas');
+        if(show) { c.style.display='block'; if(!matrixInterval) matrixInterval=setInterval(drawHacker,50); }
+        else { c.style.display='none'; clearInterval(matrixInterval); matrixInterval=null; }
+    } catch(e) {}
 }
 
 function checkLogin() {
-    if(localStorage.getItem(LOGIN_KEY)) {
-        // Logged In
-        document.getElementById('loginContainer').style.display='none';
-        document.getElementById('registerContainer').style.display='none';
-        document.getElementById('appContent').style.display='flex';
-        toggleHacker(false); 
+    try {
+        // Safe retrieval
+        const isLoggedIn = localStorage.getItem(LOGIN_KEY);
         
-        // Show notification button if not granted
-        if(Notification.permission !== "granted") {
-            document.getElementById('notificationBtn').style.display = 'block';
+        if(isLoggedIn) {
+            // Logged In: Show App, Hide Auth
+            document.getElementById('loginContainer').style.display='none';
+            document.getElementById('registerContainer').style.display='none';
+            document.getElementById('appContent').style.display='flex';
+            toggleHacker(false);
+            
+            if(Notification.permission !== "granted") {
+                document.getElementById('notificationBtn').style.display = 'block';
+            }
+        } else {
+            // Not Logged In: Show Auth, Hide App
+            document.getElementById('appContent').style.display='none';
+            document.getElementById('registerContainer').style.display='none';
+            document.getElementById('loginContainer').style.display='flex';
+            toggleHacker(true);
         }
-    } else {
-        // Logged Out / Not Logged In
-        document.getElementById('appContent').style.display='none'; // Explicitly hide app content
-        document.getElementById('registerContainer').style.display='none'; // Ensure register is hidden
-        document.getElementById('loginContainer').style.display='flex';
-        toggleHacker(true);
+    } catch(e) {
+        console.error("Login check failed", e);
     }
 }
 
 function loginUser() {
     let u = document.getElementById('loginUsernameInput').value;
     let p = document.getElementById('loginPasswordInput').value;
-    let users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
+    let users = {};
+    try { users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}'); } catch(e){}
     
     if(users[u] && users[u].pw === p) {
         localStorage.setItem(LOGIN_KEY, 'true');
-        clearAuthInputs(); // successfully logged in, clear inputs
+        clearAuthInputs();
         checkLogin();
     } else { customAlert("Invalid Credentials"); }
 }
@@ -601,7 +615,9 @@ function registerUser() {
     let u = document.getElementById('regUsernameInput').value;
     let p = document.getElementById('regPasswordInput').value;
     if(u.length<4 || p.length<6) { customAlert("Username 4+, Password 6+ chars"); return; }
-    let users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
+    let users = {};
+    try { users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}'); } catch(e){}
+    
     if(users[u]) { customAlert("User exists"); return; }
     users[u] = { pw: p };
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
@@ -613,19 +629,19 @@ function logoutUser() {
     customConfirm("Log Out වීමට අවශ්‍යද?", (res)=>{ 
         if(res) { 
             localStorage.removeItem(LOGIN_KEY); 
-            clearAuthInputs(); // Log Out වූ පසු inputs හිස් කරන්න
+            clearAuthInputs(); 
             checkLogin(); 
         } 
     });
 }
 
 function showRegister() { 
-    clearAuthInputs(); // inputs හිස් කරන්න
+    clearAuthInputs(); 
     document.getElementById('loginContainer').style.display='none'; 
     document.getElementById('registerContainer').style.display='flex'; 
 }
 function showLogin() { 
-    clearAuthInputs(); // inputs හිස් කරන්න
+    clearAuthInputs(); 
     document.getElementById('registerContainer').style.display='none'; 
     document.getElementById('loginContainer').style.display='flex'; 
 }
@@ -663,25 +679,31 @@ function customConfirm(msg, cb) {
 function closeMessageModal() { document.getElementById('messageModal').style.display='none'; }
 function handleConfirm(val) { closeMessageModal(); if(window.confirmCallback) window.confirmCallback(val); }
 
-// INIT
-window.onload = () => {
-    initHacker();
-    checkLogin();
-    setInterval(updateClock, 1000);
-    // Load screen fade out logic
-    setTimeout(() => { 
-        document.getElementById('loading-screen').style.opacity=0; 
-        setTimeout(()=>{
-            document.getElementById('loading-screen').style.display='none'
-        },500); 
-    }, 2000);
-    
-    // PWA INTEGRATION 2: Service Worker Registration - ඉවත් කරන ලදී
-    // මෙවැනි තනි ගොනු පරිසරයක (single-file environment) Service Worker 
-    // ලියාපදිංචි කිරීමේ දෝෂය (URL protocol of the script (':') is not supported)
-    // ඇතිවීම වලක්වා ගැනීම සඳහා මෙම කේත කොටස ඉවත් කරන ලදී.
-    console.log('Service Worker registration skipped due to environment limitations.');
-};
+// --- SAFETY BOOT SEQUENCE ---
+document.addEventListener('DOMContentLoaded', () => {
+    try {
+        // 1. Init Systems
+        initHacker();
+        checkLogin();
+        setInterval(updateClock, 1000);
+
+        // 2. Safe Loading Screen Removal
+        // Force hide after 2.5 seconds no matter what errors occurred before
+        setTimeout(() => {
+            const loader = document.getElementById('loading-screen');
+            if(loader) {
+                loader.style.opacity = 0;
+                setTimeout(() => { loader.style.display = 'none'; }, 500);
+            }
+        }, 2500);
+
+    } catch(e) {
+        console.error("Boot Error:", e);
+        // Emergency fallback: Just hide loader if critical JS fails
+        const loader = document.getElementById('loading-screen');
+        if(loader) loader.style.display = 'none';
+    }
+});
 </script>
 </body>
 </html>
